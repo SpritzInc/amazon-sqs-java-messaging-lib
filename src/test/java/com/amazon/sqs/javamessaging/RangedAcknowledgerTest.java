@@ -15,6 +15,7 @@
 package com.amazon.sqs.javamessaging;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,6 +33,9 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -91,14 +95,19 @@ public class RangedAcknowledgerTest extends AcknowledgerCommon {
         assertEquals(baseQueueUrl + 1, argumentCaptor.getAllValues().get(1).getQueueUrl());
         assertEquals(10, argumentCaptor.getAllValues().get(1).getEntries().size());
 
-        assertEquals(baseQueueUrl + 1, argumentCaptor.getAllValues().get(2).getQueueUrl());
-        assertEquals(1, argumentCaptor.getAllValues().get(2).getEntries().size());
+        // The order of flushes is dependent on the key order in the HashMap, which is unsorted and may be inconsistent,
+        // so don't look for a specific order.  Instead, just very that the number of messages flushed to each URL is
+        // correct.
+        Map<String, Integer> expectedFlushes = new HashMap<String, Integer>(3);
+        expectedFlushes.put(baseQueueUrl + 0, 1);
+        expectedFlushes.put(baseQueueUrl + 1, 1);
+        expectedFlushes.put(baseQueueUrl + 2, 4);
 
-        assertEquals(baseQueueUrl + 0, argumentCaptor.getAllValues().get(3).getQueueUrl());
-        assertEquals(1, argumentCaptor.getAllValues().get(3).getEntries().size());
-
-        assertEquals(baseQueueUrl + 2, argumentCaptor.getAllValues().get(4).getQueueUrl());
-        assertEquals(4, argumentCaptor.getAllValues().get(4).getEntries().size());
+        for (int i = 2; i < 5; i++) {
+            Integer expectedSize = expectedFlushes.get(argumentCaptor.getAllValues().get(i).getQueueUrl());
+            assertNotNull(expectedSize);
+            assertEquals(expectedSize.intValue(), argumentCaptor.getAllValues().get(i).getEntries().size());
+        }
     }
 
     /**
