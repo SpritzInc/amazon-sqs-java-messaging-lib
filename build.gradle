@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 group = 'com.amazonaws'
-version = '1.0.1-Spritz'
+version = '1.0.2-Spritz'
 
 description = "Amazon SQS Java Messaging Library"
 
