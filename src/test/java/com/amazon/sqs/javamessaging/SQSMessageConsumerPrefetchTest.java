@@ -1209,7 +1209,7 @@ public class SQSMessageConsumerPrefetchTest {
 
         assertNull(msg);
 
-        // verify that we did not exist early
+        // verify that we did not exit early
         assertTrue(System.currentTimeMillis() - startTime > waitTime);
     }
 
