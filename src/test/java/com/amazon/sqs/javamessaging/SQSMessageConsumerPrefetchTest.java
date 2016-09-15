@@ -1210,7 +1210,9 @@ public class SQSMessageConsumerPrefetchTest {
         assertNull(msg);
 
         // verify that we did not exit early
-        assertTrue(System.currentTimeMillis() - startTime > waitTime);
+        long elapsed = System.currentTimeMillis() - startTime;
+        assertTrue("Wait time was " + elapsed + "ms, should have been at least " + waitTime + "ms",
+                elapsed >= waitTime);
     }
 
     /**
