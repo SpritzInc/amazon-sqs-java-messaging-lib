@@ -190,7 +190,7 @@ public class SQSSession implements Session, QueueSession {
         executor.execute(sqsSessionRunnable);
     }
     
-    SQSConnection getParentConnection() {
+    public SQSConnection getParentConnection() {
         return parentSQSConnection;
     }
     
